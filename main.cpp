@@ -15,6 +15,7 @@ void mouseMonitor(int button, int state, int x, int y);
 void display();
 void init();
 void renderBitmapString(float x, float y, void *font, const char *string);
+void reshape(int w, int h);
 
 float px = 0.0f, py = 0.0f;
 float StipplePosX = 0.0f;
@@ -143,6 +144,19 @@ void display() {
     glFlush();
 }
 
+void reshape(int w, int h) {
+    glViewport(0, 0, w, h);
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    if (w <= h) {
+        glOrtho(-1.0, 1.0, -1.0 * (GLfloat)h / (GLfloat)w, 1.0 * (GLfloat)h / (GLfloat)w, -1.0, 1.0);
+    } else {
+        glOrtho(-1.0 * (GLfloat)w / (GLfloat)h, 1.0 * (GLfloat)w / (GLfloat)h, -1.0, 1.0, -1.0, 1.0);
+    }
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+}
+
 void init() {
     glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
     glOrtho(-1, 1, -1, 1, -1, 1);
@@ -180,6 +194,7 @@ int main(int argc, char** argv) {
     glutKeyboardFunc(keyboardMonitor);
     glutSpecialFunc(specialKeysMonitor);
     glutMouseFunc(mouseMonitor);
+    glutReshapeFunc(reshape); // Register the reshape callback function
     glutMainLoop();
     return 0;
 }
