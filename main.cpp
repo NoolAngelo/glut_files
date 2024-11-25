@@ -38,6 +38,7 @@ void drawPlanet(const Planet& planet);
 // Global variables
 bool pauseAnimation = false;
 float globalSpeed = 1.0f;
+const float SPEED_SCALE_FACTOR = 1.1f;  // Factor to scale speed by
 GLuint sunVBO, starsVBO;
 
 // Star-related variables
@@ -229,7 +230,7 @@ void display() {
     // Render text
     glColor3f(1.0f, 1.0f, 1.0f);
     renderBitmapString(-1.9f, 1.8f, GLUT_BITMAP_HELVETICA_12, "SPACE: pause");
-    renderBitmapString(-1.9f, 1.7f, GLUT_BITMAP_HELVETICA_12, "UP/DOWN: speed");
+    renderBitmapString(-1.9f, 1.7f, GLUT_BITMAP_HELVETICA_12, "UP/DOWN or MOUSE WHEEL: speed");
     renderBitmapString(-1.9f, 1.6f, GLUT_BITMAP_HELVETICA_12, "CLICK: new stars");
     renderBitmapString(-1.9f, 1.5f, GLUT_BITMAP_HELVETICA_12, "ESC: exit");
 
@@ -274,6 +275,17 @@ void specialKeysMonitor(int key, int x, int y) {
 void mouseMonitor(int button, int state, int x, int y) {
     if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN) {
         generateStarPositions();
+    }
+    // Handle mouse wheel events
+    else if (state == GLUT_DOWN) {
+        switch (button) {
+            case 3: // Mouse wheel up
+                globalSpeed *= SPEED_SCALE_FACTOR;
+                break;
+            case 4: // Mouse wheel down
+                globalSpeed /= SPEED_SCALE_FACTOR;
+                break;
+        }
     }
 }
 
