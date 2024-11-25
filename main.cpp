@@ -39,6 +39,8 @@ void drawPlanet(const Planet& planet);
 bool pauseAnimation = false;
 float globalSpeed = 1.0f;
 const float SPEED_SCALE_FACTOR = 1.1f;  // Factor to scale speed by
+float scaleFactor = 1.0f;
+const float SCALE_FACTOR = 1.1f;  // Factor to scale by
 GLuint sunVBO, starsVBO;
 
 // Star-related variables
@@ -192,6 +194,11 @@ void drawPlanet(const Planet& planet) {
     glTranslatef(planet.orbitRadius, 0, 0);
     glRotatef(planet.rotation, 0, 0, 1);
     
+    // Only apply scaling to Earth (index 2)
+    if (&planet == &planets[2]) {
+        glScalef(scaleFactor, scaleFactor, 1.0f);
+    }
+    
     glColor3f(planet.r, planet.g, planet.b);
     glBindBuffer(GL_ARRAY_BUFFER, planet.planetVBO);
     glVertexPointer(2, GL_FLOAT, 0, 0);
@@ -281,9 +288,11 @@ void mouseMonitor(int button, int state, int x, int y) {
         switch (button) {
             case 3: // Mouse wheel up
                 globalSpeed *= SPEED_SCALE_FACTOR;
+                scaleFactor *= SCALE_FACTOR;  // Only affects Earth
                 break;
             case 4: // Mouse wheel down
                 globalSpeed /= SPEED_SCALE_FACTOR;
+                scaleFactor /= SCALE_FACTOR;  // Only affects Earth
                 break;
         }
     }
